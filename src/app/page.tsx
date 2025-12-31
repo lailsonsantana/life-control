@@ -1,9 +1,10 @@
 import Image from "next/image";
+import InicialPage from "./inicial/page";
 
 export default function Home() {
   return (
     <div>
-      Life Control
+      <InicialPage></InicialPage>
     </div>
   );
 }
