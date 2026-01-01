@@ -12,6 +12,8 @@ import { AreaControle } from '@/resources/area_controle/area_controle.resource';
 import Button1 from '@mui/material/Button';
 import { useSugestaoService } from '@/resources/sugestao/sugestao.service';
 import { Sugestao } from '@/resources/sugestao/sugestao.resource';
+import BasicSelect from '../select/Select';
+import { StatusArea } from '@/resources/area_controle/status_area';
 
 
 
@@ -36,81 +38,113 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-
 
 export default function CustomizedTables() {
-
   const useSugestService = useSugestaoService();
   const useAreaControlService = useAreaControleService();
+
   const [areas, setAreas] = useState<AreaControle[]>([]);
   const [sugestoes, setSugestoes] = useState<Sugestao[]>([]);
-
+  const [itemSelecionado, setItemSelecionado] = useState<number | null>(null);
 
   useEffect(() => {
     searchAreas();
     searchSugestoes();
   }, []);
 
-  const rows = areas
-
-  async function searchAreas(){
+  async function searchAreas() {
     const response = await useAreaControlService.getAllAreasControle();
     setAreas(response);
-    console.log("AREAS CONTROLE")
-    console.table(response)
   }
 
-  async function searchSugestoes(){
+  async function searchSugestoes() {
     const response = await useSugestService.getAllSugestoes();
     setSugestoes(response);
-    console.log("AREAS CONTROLE")
-    console.table(response)
   }
 
-  function mostrarSugestoes(){
-    sugestoes
+  /* ===== Atualizar status de uma área ===== */
+
+  function atualizarStatus(areaId: number, novoStatus: StatusArea) {
+  setAreas((prev) =>
+    prev.map((area) =>
+      area.id === areaId
+        ? { ...area, status: novoStatus }
+        : area
+    )
+  );
+}
+
+  /* ===== Renderização das sugestões ===== */
+
+  function mostrarSugestoes() {
+    if (itemSelecionado === null) return null;
+
+    const sugestoesDaArea = sugestoes.filter(
+      (s) => s.areaControleId === itemSelecionado
+    );
+
+    return (
+      <div className="mt-4 p-4 bg-gray-100 rounded">
+        <h2 className="font-bold mb-2">Sugestões</h2>
+
+        {sugestoesDaArea.length === 0 ? (
+          <p>Nenhuma sugestão para esta área.</p>
+        ) : (
+          <ul className="list-disc ml-5">
+            {sugestoesDaArea.map((s) => (
+              <li key={s.id}>{s.sugestaoMelhoria}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
   }
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Área de Controle</StyledTableCell>
-            <StyledTableCell align="left">Status</StyledTableCell>
-            <StyledTableCell align="left">Sugestão</StyledTableCell>
-            <StyledTableCell align="left">Protein&nbsp;(g)</StyledTableCell>
-          </TableRow>
-        </TableHead>
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }}>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Área de Controle</StyledTableCell>
+              <StyledTableCell>Status</StyledTableCell>
+              <StyledTableCell>Sugestões</StyledTableCell>
+              <StyledTableCell>ID</StyledTableCell>
+            </TableRow>
+          </TableHead>
 
-        <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.id}>
-              <StyledTableCell component="th" scope="row">
-                {row.nome}
-              </StyledTableCell>
-              <StyledTableCell align="left">{row.nome}</StyledTableCell>
-              <StyledTableCell align="left">
-                <Button1>Ver sugestão</Button1>
-              </StyledTableCell>
-              <StyledTableCell align="left">{row.id}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          <TableBody>
+            {areas.map((row) => (
+              <StyledTableRow key={row.id}>
+                <StyledTableCell>{row.nome}</StyledTableCell>
+
+                <StyledTableCell>
+                  <BasicSelect
+                    value={row.status}
+                    onChange={(status) =>
+                      atualizarStatus(row.id, status)
+                    }
+                  />
+                </StyledTableCell>
+
+                <StyledTableCell>
+                  <Button1 onClick={() => setItemSelecionado(row.id)}>
+                    Ver sugestões
+                  </Button1>
+                </StyledTableCell>
+
+                <StyledTableCell>{row.id}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {itemSelecionado && mostrarSugestoes()}
+    </>
   );
 }
+
 
 
 

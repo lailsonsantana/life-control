@@ -1,11 +1,10 @@
-import { AreaControle } from "./area_controle.resource";
-import { StatusArea } from "./status_area";
+import { Semana } from "./semana.resource";
 
-class AreaControleService{
+class SemanaService{
 
-    baseUrl: string = process.env.NEXT_PUBLIC_API_URL + "/api/areas-controle";
+    baseUrl: string = process.env.NEXT_PUBLIC_API_URL + "/api/semanas";
 
-    async save(dados: AreaControle): Promise<string> {
+    async save(dados: Semana): Promise<string> {
 
         try{
           const response = await fetch(`${this.baseUrl}`, {
@@ -35,7 +34,7 @@ class AreaControleService{
         }
     }
 
-    async getAllAreasControle() : Promise<AreaControle[]>{
+    async getAllSemanas() : Promise<Semana[]>{
 
         try{
           const response = await fetch(`${this.baseUrl}`);
@@ -45,7 +44,7 @@ class AreaControleService{
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
-          const data: AreaControle[] = await response.json();
+          const data: Semana[] = await response.json();
           return data;
         }
         catch(error){
@@ -54,28 +53,6 @@ class AreaControleService{
         }
     }
 
-    async changeStatus(id: number, status: StatusArea): Promise<{ status: StatusArea }> {
-
-      const response = await fetch(`${this.baseUrl}/mudar-status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          id,
-          status
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao alterar status");
-      }
-
-      const data = await response.json();
-      return data; // { status: "OTIMO" }
-    }
-
 }
 
-export const useAreaControleService = () => new AreaControleService();
+export const useSemanaService = () => new SemanaService();

@@ -32,10 +32,13 @@ export default function InicialPage() {
     }
 
     return(
-        <div className='flex flex-col justify-center p-16'>
-            <Button variant="contained" size="large" color='secondary'>
-                NOVA ÁREA
-            </Button>
+        <div className='flex flex-col items-center p-16 space-y-4'>
+
+            <span className='w-3/4'>
+                <Button variant="contained" size="large" color='secondary'>
+                    ADICIONAR NOVA ÁREA
+                </Button>
+            </span>
 
             <TableAreas></TableAreas>
         </div>
