@@ -64,15 +64,37 @@ export default function CustomizedTables() {
 
   /* ===== Atualizar status de uma área ===== */
 
-  function atualizarStatus(areaId: number, novoStatus: StatusArea) {
-  setAreas((prev) =>
-    prev.map((area) =>
-      area.id === areaId
-        ? { ...area, status: novoStatus }
-        : area
-    )
-  );
-}
+  async function atualizarStatus(area: AreaControle, novoStatus: StatusArea) {
+  const statusAnterior = area.status;
+
+    // Atualização otimista (UI primeiro)
+    setAreas((prev) =>
+      prev.map((a) =>
+        a.id === area.id
+          ? { ...a, status: novoStatus }
+          : a
+      )
+    );
+
+    try {
+      await useAreaControlService.changeStatus(
+        area.id,
+        novoStatus
+      );
+    } catch (error) {
+      console.error("Erro ao atualizar status", error);
+
+      // rollback em caso de erro
+      setAreas((prev) =>
+        prev.map((a) =>
+          a.id === area.id
+            ? { ...a, status: statusAnterior }
+            : a
+        )
+      );
+    }
+  }
+    
 
   /* ===== Renderização das sugestões ===== */
 
@@ -122,7 +144,7 @@ export default function CustomizedTables() {
                   <BasicSelect
                     value={row.status}
                     onChange={(status) =>
-                      atualizarStatus(row.id, status)
+                    atualizarStatus(row, status)
                     }
                   />
                 </StyledTableCell>
@@ -143,6 +165,7 @@ export default function CustomizedTables() {
       {itemSelecionado && mostrarSugestoes()}
     </>
   );
+
 }
 
 

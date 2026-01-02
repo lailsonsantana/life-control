@@ -7,8 +7,6 @@ import { useEffect, useState } from 'react';
 import TableAreas from '@/components/table/TableAreas';
 
 
-
-
 export default function InicialPage() {
 
     const useAreaControlService = useAreaControleService();
