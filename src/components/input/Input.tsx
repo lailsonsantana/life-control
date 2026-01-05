@@ -1,9 +1,24 @@
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 
-export default function Input() {
-    return(
-        <div>
-            <label htmlFor="visitors" className="block mb-2.5 text-md font-medium text-heading">Nome:</label>
-            <input type="text" id="visitors" className="bg-neutral-secondary-medium border border-default-medium text-heading text-base rounded-base focus:ring-brand focus:border-brand block w-3/4 px-3.5 py-3 shadow-xs placeholder:text-body" placeholder="" required />
-        </div>
-    )
+interface InputProps {
+  label: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+const Input: React.FC<InputProps> = ({ label, value, onChange }) => {
+  return (
+    <Box sx={{ maxWidth: "100%" }}>
+      <TextField
+        fullWidth
+        label={label}
+        value={value}
+        onChange={onChange}
+      />
+    </Box>
+  );
+};
+
+export default Input;
+

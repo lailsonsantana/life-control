@@ -3,10 +3,10 @@ import { StatusArea } from "./status_area";
 
 
 export class AreaControle {
-  id: number;
+  id?: number;
   nome: string;
   sugestoes: Sugestao[];
-  status: StatusArea;
+  status?: StatusArea;
 
   constructor(
     id: number,

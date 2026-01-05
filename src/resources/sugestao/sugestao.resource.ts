@@ -1,11 +1,11 @@
 export class Sugestao{
-    id: number;
-    sugestaoMelhoria: string;
-    areaControleId: number;
+    id?: number;
+    descricao: string;
+    areaControleId?: number;
 
     constructor(id: number, sugestao: string, areaControleId: number){
         this.id = id;
-        this.sugestaoMelhoria = sugestao;
+        this.descricao = sugestao;
         this.areaControleId = areaControleId;
     }
 }

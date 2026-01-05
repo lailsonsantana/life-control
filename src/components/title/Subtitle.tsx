@@ -1,13 +1,15 @@
-import { Box } from '@mui/material';
-import TextField from '@mui/material/TextField';
-import ContainerCriacao from '../container/ContainerCriacao';
+interface SubtitleProps{
+    text: string
+}
 
-export default function Subtitle(){
+const Subtitle: React.FC<SubtitleProps> = ({text}) => {
 
     return(
             <h2 className="text-3xl sm:text-2xl font-bold text-black">
-                Criar uma nova área de controle
+                {text}
             </h2>
 
     )
 }
+
+export default Subtitle;

@@ -5,6 +5,9 @@ import { useAreaControleService } from "@/resources/area_controle/area_controle.
 import { AreaControle } from '@/resources/area_controle/area_controle.resource';
 import { useEffect, useState } from 'react';
 import TableAreas from '@/components/table/TableAreas';
+import ContainerCriacao from '@/components/container/ContainerCriacao';
+import { useRouter } from 'next/navigation';
+
 
 
 export default function InicialPage() {
@@ -12,6 +15,7 @@ export default function InicialPage() {
     const useAreaControlService = useAreaControleService();
     const [areas, setAreas] = useState<AreaControle[]>([]);
     const [hasMounted, setHasMounted] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         setHasMounted(true);
@@ -30,15 +34,15 @@ export default function InicialPage() {
     }
 
     return(
-        <div className='flex flex-col items-center p-16 space-y-4'>
+        
+        <ContainerCriacao>
 
-            <span className='w-3/4'>
-                <Button variant="contained" size="large" color='secondary'>
-                    ADICIONAR NOVA ÁREA
-                </Button>
-            </span>
+            <Button variant="contained" size="large" color='secondary' onClick={() => router.push(`/area-criacao/${1}`)}>
+                ADICIONAR NOVA ÁREA
+            </Button>
 
-            <TableAreas></TableAreas>
-        </div>
+            <TableAreas />
+        </ContainerCriacao>    
+
     )
 }

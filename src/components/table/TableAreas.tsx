@@ -1,3 +1,5 @@
+"use client";
+
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,6 +16,7 @@ import { useSugestaoService } from '@/resources/sugestao/sugestao.service';
 import { Sugestao } from '@/resources/sugestao/sugestao.resource';
 import BasicSelect from '../select/Select';
 import { StatusArea } from '@/resources/area_controle/status_area';
+import Link from 'next/link';
 
 
 
@@ -42,7 +45,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function CustomizedTables() {
   const useSugestService = useSugestaoService();
   const useAreaControlService = useAreaControleService();
-
   const [areas, setAreas] = useState<AreaControle[]>([]);
   const [sugestoes, setSugestoes] = useState<Sugestao[]>([]);
   const [itemSelecionado, setItemSelecionado] = useState<number | null>(null);
@@ -78,7 +80,7 @@ export default function CustomizedTables() {
 
     try {
       await useAreaControlService.changeStatus(
-        area.id,
+        area.id!,
         novoStatus
       );
     } catch (error) {
@@ -114,7 +116,7 @@ export default function CustomizedTables() {
         ) : (
           <ul className="list-disc ml-5">
             {sugestoesDaArea.map((s) => (
-              <li key={s.id}>{s.sugestaoMelhoria}</li>
+              <li key={s.id}>{s.descricao}</li>
             ))}
           </ul>
         )}
@@ -138,11 +140,13 @@ export default function CustomizedTables() {
           <TableBody>
             {areas.map((row) => (
               <StyledTableRow key={row.id}>
-                <StyledTableCell>{row.nome}</StyledTableCell>
+                <StyledTableCell>
+                  <Link href={`/area-detalhes/${row.id}`}>{row.nome}</Link>
+                </StyledTableCell>
 
                 <StyledTableCell>
                   <BasicSelect
-                    value={row.status}
+                    value={row.status!}
                     onChange={(status) =>
                     atualizarStatus(row, status)
                     }
@@ -150,7 +154,7 @@ export default function CustomizedTables() {
                 </StyledTableCell>
 
                 <StyledTableCell>
-                  <Button1 onClick={() => setItemSelecionado(row.id)}>
+                  <Button1 onClick={() => setItemSelecionado(row.id!)}>
                     Ver sugestões
                   </Button1>
                 </StyledTableCell>
