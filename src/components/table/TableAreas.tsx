@@ -14,161 +14,120 @@ import { AreaControle } from '@/resources/area_controle/area_controle.resource';
 import Button1 from '@mui/material/Button';
 import { useSugestaoService } from '@/resources/sugestao/sugestao.service';
 import { Sugestao } from '@/resources/sugestao/sugestao.resource';
-import BasicSelect from '../select/Select';
-import { StatusArea } from '@/resources/area_controle/status_area';
 import Link from 'next/link';
-
+import Status from '../status/Status';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.secondary.dark,
-    color: theme.palette.common.white,
-    fontSize: 18
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 16,
-  },
+	[`&.${tableCellClasses.head}`]: {
+		backgroundColor: theme.palette.secondary.dark,
+		color: theme.palette.common.white,
+		fontSize: 18
+	},
+	[`&.${tableCellClasses.body}`]: {
+		fontSize: 16,
+	},
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
+	'&:nth-of-type(odd)': {
+		backgroundColor: theme.palette.action.hover,
+	},
+	// hide last border
+	'&:last-child td, &:last-child th': {
+		border: 0,
+	},
 }));
 
 
 export default function CustomizedTables() {
-  const useSugestService = useSugestaoService();
-  const useAreaControlService = useAreaControleService();
-  const [areas, setAreas] = useState<AreaControle[]>([]);
-  const [sugestoes, setSugestoes] = useState<Sugestao[]>([]);
-  const [itemSelecionado, setItemSelecionado] = useState<number | null>(null);
+	const useSugestService = useSugestaoService();
+	const useAreaControlService = useAreaControleService();
+	const [areas, setAreas] = useState<AreaControle[]>([]);
+	const [sugestoes, setSugestoes] = useState<Sugestao[]>([]);
+	const [itemSelecionado, setItemSelecionado] = useState<number | null>(null);
 
-  useEffect(() => {
-    searchAreas();
-    searchSugestoes();
-  }, []);
+	useEffect(() => {
+		searchAreas();
+		searchSugestoes();
+	}, []);
 
-  async function searchAreas() {
-    const response = await useAreaControlService.getAllAreasControle();
-    setAreas(response);
-  }
+	async function searchAreas() {
+		const response = await useAreaControlService.getAllAreasControle();
+		setAreas(response);
+	}
 
-  async function searchSugestoes() {
-    const response = await useSugestService.getAllSugestoes();
-    setSugestoes(response);
-  }
+	async function searchSugestoes() {
+		const response = await useSugestService.getAllSugestoes();
+		setSugestoes(response);
+	}
 
-  /* ===== Atualizar status de uma área ===== */
+	/* ===== Renderização das sugestões ===== */
 
-  async function atualizarStatus(area: AreaControle, novoStatus: StatusArea) {
-  const statusAnterior = area.status;
+	function mostrarSugestoes() {
+		if (itemSelecionado === null) return null;
 
-    // Atualização otimista (UI primeiro)
-    setAreas((prev) =>
-      prev.map((a) =>
-        a.id === area.id
-          ? { ...a, status: novoStatus }
-          : a
-      )
-    );
+		const sugestoesDaArea = sugestoes.filter(
+			(s) => s.areaControleId === itemSelecionado
+		);
 
-    try {
-      await useAreaControlService.changeStatus(
-        area.id!,
-        novoStatus
-      );
-    } catch (error) {
-      console.error("Erro ao atualizar status", error);
+		return (
+			<div className="mt-4 p-4 bg-gray-100 rounded">
+				<h2 className="font-bold mb-2">Sugestões</h2>
 
-      // rollback em caso de erro
-      setAreas((prev) =>
-        prev.map((a) =>
-          a.id === area.id
-            ? { ...a, status: statusAnterior }
-            : a
-        )
-      );
-    }
-  }
-    
+				{sugestoesDaArea.length === 0 ? (
+					<p>Nenhuma sugestão para esta área.</p>
+				) : (
+					<ul className="list-disc ml-5">
+						{sugestoesDaArea.map((s) => (
+							<li key={s.id}>{s.descricao}</li>
+						))}
+					</ul>
+				)}
+			</div>
+		);
+	}
 
-  /* ===== Renderização das sugestões ===== */
+	return (
+		<>
+			<TableContainer component={Paper}>
+				<Table sx={{ minWidth: 700 }}>
+					<TableHead>
+						<TableRow>
+							<StyledTableCell>Área de Controle</StyledTableCell>
+							<StyledTableCell>Status</StyledTableCell>
+							<StyledTableCell>Sugestões</StyledTableCell>
+							<StyledTableCell>ID</StyledTableCell>
+						</TableRow>
+					</TableHead>
 
-  function mostrarSugestoes() {
-    if (itemSelecionado === null) return null;
+					<TableBody>
+						{areas.map((row) => (
+							<StyledTableRow key={row.id}>
+								<StyledTableCell>
+									<Link href={`/area-detalhe/${row.id}`}>{row.nome}</Link>
+								</StyledTableCell>
 
-    const sugestoesDaArea = sugestoes.filter(
-      (s) => s.areaControleId === itemSelecionado
-    );
+								<StyledTableCell>
+									<Status text={row.status!} />
+								</StyledTableCell>
 
-    return (
-      <div className="mt-4 p-4 bg-gray-100 rounded">
-        <h2 className="font-bold mb-2">Sugestões</h2>
+								<StyledTableCell>
+									<Button1 onClick={() => setItemSelecionado(row.id!)}>
+										Ver sugestões
+									</Button1>
+								</StyledTableCell>
 
-        {sugestoesDaArea.length === 0 ? (
-          <p>Nenhuma sugestão para esta área.</p>
-        ) : (
-          <ul className="list-disc ml-5">
-            {sugestoesDaArea.map((s) => (
-              <li key={s.id}>{s.descricao}</li>
-            ))}
-          </ul>
-        )}
-      </div>
-    );
-  }
+								<StyledTableCell>{row.id}</StyledTableCell>
+							</StyledTableRow>
+						))}
+					</TableBody>
+				</Table>
+			</TableContainer>
 
-  return (
-    <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }}>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Área de Controle</StyledTableCell>
-              <StyledTableCell>Status</StyledTableCell>
-              <StyledTableCell>Sugestões</StyledTableCell>
-              <StyledTableCell>ID</StyledTableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {areas.map((row) => (
-              <StyledTableRow key={row.id}>
-                <StyledTableCell>
-                  <Link href={`/area-detalhes/${row.id}`}>{row.nome}</Link>
-                </StyledTableCell>
-
-                <StyledTableCell>
-                  <BasicSelect
-                    value={row.status!}
-                    onChange={(status) =>
-                    atualizarStatus(row, status)
-                    }
-                  />
-                </StyledTableCell>
-
-                <StyledTableCell>
-                  <Button1 onClick={() => setItemSelecionado(row.id!)}>
-                    Ver sugestões
-                  </Button1>
-                </StyledTableCell>
-
-                <StyledTableCell>{row.id}</StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {itemSelecionado && mostrarSugestoes()}
-    </>
-  );
+			{itemSelecionado && mostrarSugestoes()}
+		</>
+	);
 
 }
 
