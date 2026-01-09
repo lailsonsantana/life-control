@@ -2,17 +2,16 @@
 
 import NewButton from "@/components/button/NewButton";
 import ContainerCriacao from "@/components/container/ContainerCriacao";
-import Subtitle from "@/components/title/Subtitle";
 import Input from "@/components/input/Input"
 import { AreaControle } from "@/resources/area_controle/area_controle.resource";
 import { useAreaControleService } from "@/resources/area_controle/area_controle.service";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Status from "@/components/status/Status";
 import BasicSelect from "@/components/select/Select";
 import { StatusArea } from "@/resources/area_controle/status_area";
 import { InfoBlock } from "@/components/info/InfoBlock";
 import StatusBadge from "@/components/status/StatusBadge";
+import JesusIcon from "@/assets/icons/jesus.png";
 
 
 export default function AreaDetalhes() {
@@ -155,20 +154,30 @@ export default function AreaDetalhes() {
 				<ContainerCriacao>
 
 				{/* ===== HEADER ===== */}
+				<div className="flex items-center gap-4">
+					<img
+						src={JesusIcon.src}
+						alt={`Ícone da área ${area.nome}`}
+						className="w-16 h-16"
+					/>
+				
 				<div className="w-full flex flex-col gap-2 border-b pb-4">
-				<h1 className="text-2xl font-bold">{area.nome}</h1>
 
-				<div className="flex flex-wrap items-center gap-4">
-					<StatusBadge status={statusSelecionado!} />
+					
+					<h1 className="text-2xl font-bold">{area.nome}</h1>
 
-					<div className="px-3 py-1 rounded bg-white shadow text-sm font-medium">
-					Pontuação:
-					<span className="font-bold ml-1">{area.pontuacao}</span>
+					<div className="flex flex-wrap items-center gap-4">
+						<StatusBadge status={statusSelecionado!} />
+
+						<div className="px-3 py-1 rounded bg-white shadow text-sm font-medium">
+						Pontuação:
+						<span className="font-bold ml-1">{area.pontuacao}</span>
+						</div>
+
+						<span className="text-sm text-gray-600">
+						Criado em: {area.dataCriacao}
+						</span>
 					</div>
-
-					<span className="text-sm text-gray-600">
-					Criado em: {area.dataCriacao}
-					</span>
 				</div>
 				</div>
 

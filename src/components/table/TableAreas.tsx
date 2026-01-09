@@ -12,8 +12,6 @@ import { useAreaControleService } from '@/resources/area_controle/area_controle.
 import { useEffect, useState } from 'react';
 import { AreaControle } from '@/resources/area_controle/area_controle.resource';
 import Button1 from '@mui/material/Button';
-import { useSugestaoService } from '@/resources/sugestao/sugestao.service';
-import { Sugestao } from '@/resources/sugestao/sugestao.resource';
 import Link from 'next/link';
 import Status from '../status/Status';
 
