@@ -1,18 +1,18 @@
 import * as React from 'react';
 
-type ContainerCriacaoProps = {
+type ContainerTableProps = {
   children: React.ReactNode;
 };
 
-export default function ContainerCriacao({ children }: ContainerCriacaoProps) {
+export default function ContainerTable({ children }: ContainerTableProps) {
   return (
     <section
       className="
-        bg-[#D0EFF2]
+        bg-white
         flex flex-col
-        border border-gray-300
+        border border-gray-100
         rounded-xl
-        shadow-lg
+        shadow-md
         p-6
         m-4
         gap-6

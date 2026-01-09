@@ -41,15 +41,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 export default function CustomizedTables() {
-	const useSugestService = useSugestaoService();
 	const useAreaControlService = useAreaControleService();
 	const [areas, setAreas] = useState<AreaControle[]>([]);
-	const [sugestoes, setSugestoes] = useState<Sugestao[]>([]);
-	const [itemSelecionado, setItemSelecionado] = useState<number | null>(null);
+	const [itemSelecionadoS, setItemSelecionadoS] = useState<number | null>(null);
+	const [itemSelecionadoP, setItemSelecionadoP] = useState<number | null>(null);
 
 	useEffect(() => {
 		searchAreas();
-		searchSugestoes();
 	}, []);
 
 	async function searchAreas() {
@@ -57,36 +55,92 @@ export default function CustomizedTables() {
 		setAreas(response);
 	}
 
-	async function searchSugestoes() {
-		const response = await useSugestService.getAllSugestoes();
-		setSugestoes(response);
-	}
-
 	/* ===== Renderização das sugestões ===== */
 
-	function mostrarSugestoes() {
-		if (itemSelecionado === null) return null;
+	function mostrarPerguntas() {
+		if (itemSelecionadoP === null) return null;
 
-		const sugestoesDaArea = sugestoes.filter(
-			(s) => s.areaControleId === itemSelecionado
-		);
+		const area = areas.find((a) => a.id === itemSelecionadoP);
+		if (!area) return null;
+
+		const perguntas = area.perguntas;
 
 		return (
-			<div className="mt-4 p-4 bg-gray-100 rounded">
-				<h2 className="font-bold mb-2">Sugestões</h2>
+			<div className="mt-6 w-full max-w-3xl mx-auto bg-white rounded-lg shadow p-4">
 
-				{sugestoesDaArea.length === 0 ? (
-					<p>Nenhuma sugestão para esta área.</p>
-				) : (
-					<ul className="list-disc ml-5">
-						{sugestoesDaArea.map((s) => (
-							<li key={s.id}>{s.descricao}</li>
-						))}
-					</ul>
-				)}
+			{/* Header */}
+			<div className="flex items-center justify-between mb-3 border-b pb-2">
+				<h2 className="font-semibold text-lg">Perguntas</h2>
+				<span className="text-sm text-gray-500">
+				{perguntas.length} {perguntas.length === 1 ? "pergunta" : "perguntas"}
+				</span>
+			</div>
+
+			{/* Conteúdo */}
+			{perguntas.length === 0 ? (
+				<p className="text-sm text-gray-500">
+				Nenhuma pergunta cadastrada para esta área.
+				</p>
+			) : (
+				<ul className="space-y-3">
+				{perguntas.map((p) => (
+					<li
+					key={p.id}
+					className="bg-gray-50 rounded p-3 text-sm leading-relaxed"
+					>
+					{p.textoPergunta}
+					</li>
+				))}
+				</ul>
+			)}
 			</div>
 		);
 	}
+
+
+
+	function mostrarSugestoes() {
+		if (itemSelecionadoS === null) return null;
+
+		const area = areas.find((a) => a.id === itemSelecionadoS);
+		if (!area) return null;
+
+		const sugestoes = area.sugestoes;
+
+		return (
+				<div className="mt-6 w-full max-w-3xl mx-auto bg-white rounded-lg shadow p-4">
+
+				{/* Header */}
+				<div className="flex items-center justify-between mb-3 border-b pb-2">
+					<h2 className="font-semibold text-lg">Sugestões</h2>
+					<span className="text-sm text-gray-500">
+					{sugestoes.length} {sugestoes.length === 1 ? "item" : "itens"}
+					</span>
+				</div>
+
+				{/* Conteúdo */}
+				{sugestoes.length === 0 ? (
+					<p className="text-sm text-gray-500">
+					Nenhuma sugestão cadastrada para esta área.
+					</p>
+				) : (
+					<ul className="space-y-2">
+					{sugestoes.map((s) => (
+						<li
+						key={s.id}
+						className="flex items-start gap-2 bg-gray-50 rounded p-2"
+						>
+						<span className="text-blue-500 font-bold">•</span>
+						<span>{s.descricao}</span>
+						</li>
+					))}
+					</ul>
+				)}
+				</div>
+			);
+		}
+
+
 
 	return (
 		<>
@@ -97,7 +151,7 @@ export default function CustomizedTables() {
 							<StyledTableCell>Área de Controle</StyledTableCell>
 							<StyledTableCell>Status</StyledTableCell>
 							<StyledTableCell>Sugestões</StyledTableCell>
-							<StyledTableCell>ID</StyledTableCell>
+							<StyledTableCell>Perguntas</StyledTableCell>
 						</TableRow>
 					</TableHead>
 
@@ -113,19 +167,29 @@ export default function CustomizedTables() {
 								</StyledTableCell>
 
 								<StyledTableCell>
-									<Button1 onClick={() => setItemSelecionado(row.id!)}>
-										Ver sugestões
+									<Button1 onClick={() => setItemSelecionadoS(row.id!)}>
+										Ver 
 									</Button1>
 								</StyledTableCell>
-
-								<StyledTableCell>{row.id}</StyledTableCell>
+									
+								<StyledTableCell>
+									<Button1 onClick={() => setItemSelecionadoP(row.id!)}>
+										Ver 
+									</Button1>
+								</StyledTableCell>
 							</StyledTableRow>
 						))}
 					</TableBody>
 				</Table>
 			</TableContainer>
 
-			{itemSelecionado && mostrarSugestoes()}
+			<div className='flex flex-row gap-32'>
+				{itemSelecionadoS && mostrarSugestoes()}
+
+				{itemSelecionadoP && mostrarPerguntas()}
+			</div>
+
+			
 		</>
 	);
 

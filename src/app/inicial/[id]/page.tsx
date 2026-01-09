@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import TableAreas from '@/components/table/TableAreas';
 import ContainerCriacao from '@/components/container/ContainerCriacao';
 import { useRouter } from 'next/navigation';
+import ContainerTable from '@/components/container/ContainerTable';
 
 
 
@@ -35,14 +36,14 @@ export default function InicialPage() {
 
     return(
         
-        <ContainerCriacao>
+        <ContainerTable>
 
             <Button variant="contained" size="large" color='secondary' onClick={() => router.push(`/area-criacao/${1}`)}>
                 ADICIONAR NOVA ÁREA
             </Button>
 
             <TableAreas />
-        </ContainerCriacao>    
+        </ContainerTable>    
 
     )
 }

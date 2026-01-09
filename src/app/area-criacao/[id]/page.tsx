@@ -5,23 +5,46 @@ import ContainerCriacao from "@/components/container/ContainerCriacao"
 import Input from "@/components/input/Input"
 import Subtitle from "@/components/title/Subtitle"
 import { useAreaControleService } from "@/resources/area_controle/area_controle.service";
+import { useRouter } from 'next/navigation';
 import { useState } from "react";
 
 
 export default function AreaCriacao() {
+
+	const router = useRouter();
 	const useAreaControlService = useAreaControleService();
 	const [area, setArea] = useState("");
-	const [inputs, setInputs] = useState([""]);
+	const [inputSugestoes, setInputSugestoes] = useState([""]);
+	const [inputPerguntas, setInputperguntas] = useState([""]);
 
-	function novaSugestao() {
-		setInputs((prev) => [...prev, ""]);
+	function incluirSugestao() {
+		setInputSugestoes((prev) => [...prev, ""]);
 	}
 
-	function handleSugestaoChange(index: number, value: string) {
-		setInputs((prev) =>
+	function removerSugestao(index: number) {
+		setInputSugestoes((prev) => prev.filter((_, i) => i !== index));
+	}
+
+	function incluirPergunta() {
+		setInputperguntas((prev) => [...prev, ""]);
+	}
+
+	function removerPergunta(index: number) {
+		setInputperguntas((prev) => prev.filter((_, i) => i !== index));
+	}
+
+	function handlePerguntaChange(index: number, value: string) {
+		setInputperguntas((prev) =>
 			prev.map((item, i) => (i === index ? value : item))
 		);
 	}
+
+	function handleSugestaoChange(index: number, value: string) {
+		setInputSugestoes((prev) =>
+			prev.map((item, i) => (i === index ? value : item))
+		);
+	}
+
 
 	async function handleSubmit() {
 		// evita submit inválido
@@ -30,7 +53,7 @@ export default function AreaCriacao() {
 			return;
 		}
 
-		const sugestoesValidas = inputs
+		const sugestoesValidas = inputSugestoes
 			.map((value) => value.trim())
 			.filter((value) => value.length > 0);
 
@@ -44,12 +67,16 @@ export default function AreaCriacao() {
 			sugestoes: sugestoesValidas.map((descricao) => ({
 				descricao,
 			})),
+			perguntas: inputPerguntas.map((textoPergunta) => ({
+				textoPergunta,
+			})),
 		};
 
 		try {
 			await useAreaControlService.save(areaControle);
 			setArea("");
-			setInputs([""]);
+			setInputSugestoes([""]);
+			setInputperguntas([""])
 
 			console.log("Payload enviado:", areaControle);
 		} catch (error) {
@@ -58,10 +85,14 @@ export default function AreaCriacao() {
 	}
 
 
+
 	return (
 		<ContainerCriacao>
-			<div className="space-y-4">
+
+			{/* ===== CABEÇALHO ===== */}
+			<div className="flex flex-col gap-4 w-full border-b border-b-gray-950 pb-4">
 				<Subtitle text="Inserir uma nova área de controle" />
+
 				<Input
 					label="Área"
 					value={area}
@@ -69,30 +100,90 @@ export default function AreaCriacao() {
 				/>
 			</div>
 
-			<div className="space-y-4">
-				<Subtitle text="Descreva uma nova sugestão de melhoria" />
-				{inputs.map((value, index) => (
-					<Input
-						key={index}
-						label={'Nova sugestão'}
-						value={value}
-						onChange={(e) =>
-							handleSugestaoChange(index, e.target.value)
-						}
-					/>
-				))}
+			{/* ===== SUGESTÕES & PERGUNTAS ===== */}
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+
+				{/* ===== SUGESTÕES ===== */}
+				<div className="bg-white rounded-lg shadow p-4 flex flex-col gap-4">
+					<Subtitle text="Sugestões de melhoria" />
+
+					{inputSugestoes.map((value, index) => (
+						<div key={index} className="flex flex-col gap-1">
+							<Input
+								label={`Sugestão ${index + 1}`}
+								value={value}
+								onChange={(e) =>
+									handleSugestaoChange(index, e.target.value)
+								}
+							/>
+
+							<button
+								className="text-red-500 text-sm self-start"
+								onClick={() => removerSugestao(index)}
+								disabled={inputSugestoes.length === 1}
+							>
+								Remover
+							</button>
+						</div>
+					))}
+
+					<button
+						className="text-blue-600 text-sm self-start"
+						onClick={incluirSugestao}
+					>
+						+ Incluir sugestão
+					</button>
+				</div>
+
+				{/* ===== PERGUNTAS ===== */}
+				<div className="bg-white rounded-lg shadow p-4 flex flex-col gap-4">
+					<Subtitle text="Perguntas de reflexão" />
+
+					{inputPerguntas.map((value, index) => (
+						<div key={index} className="flex flex-col gap-1">
+							<Input
+								label={`Pergunta ${index + 1}`}
+								value={value}
+								onChange={(e) =>
+									handlePerguntaChange(index, e.target.value)
+								}
+							/>
+
+							<button
+								className="text-red-500 text-sm self-start"
+								onClick={() => removerPergunta(index)}
+								disabled={inputPerguntas.length === 1}
+							>
+								Remover
+							</button>
+						</div>
+					))}
+
+					<button
+						className="text-blue-600 text-sm self-start"
+						onClick={incluirPergunta}
+					>
+						+ Incluir pergunta
+					</button>
+				</div>
+
 			</div>
 
-			<div className="mx-auto">
+			{/* ===== AÇÕES ===== */}
+			<div className="flex justify-end gap-4 pt-6 border-t w-full">
 				<NewButton
-					label="ADICIONAR SUGESTÃO"
-					onClick={novaSugestao}
+					label="Cancelar"
+					onClick={() => router.push(`/inicial/${1}`)}
+				/>
+
+				<NewButton
+					label="Criar"
+					onClick={handleSubmit}
+					type="submit"
 				/>
 			</div>
 
-			<div>
-				<NewButton label="Criar" onClick={handleSubmit} type="submit" />
-			</div>
 		</ContainerCriacao>
+
 	);
 }
