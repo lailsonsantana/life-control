@@ -38,7 +38,7 @@ const Status: React.FC<StatusProps> = ({text}) => {
   if (!status) return null;
 
   return (
-    <div className={`flex items-center gap-2 font-bold ${status.color}`}>
+    <div className={`flex items-center gap-1 font-bold ${status.color}`}>
       <span>{status.icon}</span>
       <span>{status.label}</span>
     </div>

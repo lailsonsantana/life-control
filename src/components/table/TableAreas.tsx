@@ -20,10 +20,14 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
 		backgroundColor: theme.palette.secondary.dark,
 		color: theme.palette.common.white,
-		fontSize: 18
+		fontSize: 18,
+		textAlign: "center",      // 👈 centraliza cabeçalho
+    	//verticalAlign: "middle",
 	},
 	[`&.${tableCellClasses.body}`]: {
 		fontSize: 16,
+		textAlign: "center",
+		verticalAlign: "middle",
 	},
 }));
 
@@ -150,6 +154,7 @@ export default function CustomizedTables() {
 							<StyledTableCell>Status</StyledTableCell>
 							<StyledTableCell>Sugestões</StyledTableCell>
 							<StyledTableCell>Perguntas</StyledTableCell>
+							<StyledTableCell>Pontuação</StyledTableCell>
 						</TableRow>
 					</TableHead>
 
@@ -161,7 +166,9 @@ export default function CustomizedTables() {
 								</StyledTableCell>
 
 								<StyledTableCell>
-									<Status text={row.status!} />
+									<div className="flex items-center justify-center gap-2">
+										<Status text={row.status!} />
+									</div>
 								</StyledTableCell>
 
 								<StyledTableCell>
@@ -174,6 +181,10 @@ export default function CustomizedTables() {
 									<Button1 onClick={() => setItemSelecionadoP(row.id!)}>
 										Ver 
 									</Button1>
+								</StyledTableCell>
+
+								<StyledTableCell>
+									{row.pontuacao}
 								</StyledTableCell>
 							</StyledTableRow>
 						))}

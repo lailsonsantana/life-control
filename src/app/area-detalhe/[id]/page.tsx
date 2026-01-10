@@ -11,7 +11,9 @@ import BasicSelect from "@/components/select/Select";
 import { StatusArea } from "@/resources/area_controle/status_area";
 import { InfoBlock } from "@/components/info/InfoBlock";
 import StatusBadge from "@/components/status/StatusBadge";
-import JesusIcon from "@/assets/icons/jesus.png";
+
+import { getAreaIcon } from "@/utils/areaIconUtils";
+
 
 
 export default function AreaDetalhes() {
@@ -20,6 +22,8 @@ export default function AreaDetalhes() {
 	const params = useParams();
 	const id = Number(params?.id);
 	const router = useRouter();
+
+	
 	
 	const [area, setArea] = useState<AreaControle>({
 		nome: "",
@@ -156,7 +160,7 @@ export default function AreaDetalhes() {
 				{/* ===== HEADER ===== */}
 				<div className="flex items-center gap-4">
 					<img
-						src={JesusIcon.src}
+						src={getAreaIcon(area.nome)}
 						alt={`Ícone da área ${area.nome}`}
 						className="w-16 h-16"
 					/>
