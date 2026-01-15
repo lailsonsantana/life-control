@@ -8,6 +8,8 @@ import OrganizacaoIcon from "@/assets/icons/organizacao.png"
 import RelacionamentosIcon from "@/assets/icons/relacionamentos.png"
 import ComunicacaoIcon from "@/assets/icons/comunicacao.png"
 import InteracaoIcon from "@/assets/icons/interacao.png"
+import EstudoIcon from "@/assets/icons/estudo.png"
+import DsicplinaIcon from "@/assets/icons/disciplina.png"
 
 
 const AREA_ICON_MAP: Record<string, string> = {
@@ -17,8 +19,9 @@ const AREA_ICON_MAP: Record<string, string> = {
   ORGANIZACAO: OrganizacaoIcon.src,
   RELACIONAMENTOS: RelacionamentosIcon.src,
   COMUNICACAO: ComunicacaoIcon.src,
-  INTERACAOSOCIAL: InteracaoIcon.src
-  //ESTUDO: EstudoIcon.src,
+  INTERACAOSOCIAL: InteracaoIcon.src,
+  ESTUDO: EstudoIcon.src,
+  DISCIPLINA: DsicplinaIcon.src
 };
 
 

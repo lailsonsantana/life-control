@@ -68,7 +68,7 @@ export default function AreaDetalhes() {
 	};
 
 	const handlePerguntaChange = (index: number, value: string) => {
-		setSugestoesEdit(prev => {
+		setPerguntasEdit(prev => {
 			const copia = [...prev];
 			copia[index] = value;
 			return copia;

@@ -162,7 +162,11 @@ export default function CustomizedTables() {
 						{areas.map((row) => (
 							<StyledTableRow key={row.id}>
 								<StyledTableCell>
-									<Link href={`/area-detalhe/${row.id}`}>{row.nome}</Link>
+									<Link href={`/area-detalhe/${row.id}`}>
+									<h3 className='font-bold text-lg'>
+										{row.nome}
+									</h3>
+									</Link>
 								</StyledTableCell>
 
 								<StyledTableCell>
